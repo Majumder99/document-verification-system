@@ -1,54 +1,57 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
-
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.4.1;
 
 contract CertificateVerification {
-    event AddedDocument(string ipfs_hash, address id, uint256 timeAdded);
-    event AddDocumentError(string ipfs_hash, string error);
 
-    mapping(string => uint256) documentAddTimeMap; //contains when documents was added
-    mapping(string => address) documentAddKeyMap; //contains who (public key) added the document
+    mapping(string => uint) documentAddTimeMap; //contains when documents was added
+    mapping(string => address) documentAddKeyMap; //contains public key of the user
+    mapping(address => bool) verifiedUser; //contains verified users 
+    mapping(address => string) userFilesCid; //contains user's ipfs
+    address payable public owner;
 
-    constructor() {}
-
-    function add_book(string memory ipfs_hash) public {
-        //check if already added
-        if (documentAddTimeMap[ipfs_hash] > 0) {
-            //already added by someone else
-            emit AddDocumentError(ipfs_hash, "already added");
-        }
-        //add now
-        uint256 timeAdded = block.timestamp;
-        documentAddTimeMap[ipfs_hash] = timeAdded;
-        address admin_id =  msg.sender;
-        documentAddKeyMap[ipfs_hash] = admin_id;
-        emit AddedDocument(ipfs_hash, admin_id, timeAdded);
+    constructor() {
+        owner = payable(msg.sender);
     }
 
-    function verifyDocument(string memory ipfs_hash)
-        public
-        view
-        returns (bool)
-    {
-        if (documentAddTimeMap[ipfs_hash] > 0) return true;
+    //setting the user who deployed this contract as owner
+    modifier owner_check(){
+        require(owner == msg.sender, "Sender is not owner");
+        _;
+    }
+
+    //only owner can add files to the contract
+    function add_files(string memory ipfs_cid) public owner_check returns(bool) {
+        //check if already added
+        if (documentAddTimeMap[ipfs_cid] > 0) {
+            return false;
+        }
+        //add now
+        uint timeAdded = block.timestamp;
+        documentAddTimeMap[ipfs_cid] = timeAdded;
+        return true;
+    }
+
+    //this will verify user's uploaded document
+    function verifyDocument(string memory ipfs_cid) public returns (bool){
+        if (documentAddTimeMap[ipfs_cid] > 0) {
+            verifiedUser[msg.sender] = true;
+            userFilesCid[msg.sender] = ipfs_cid;
+            return true;
+        }
         return false;
     }
 
-    function getDocumentAddedTime(string memory ipfs_hash)
-        public
-        view
-        returns (uint256)
-    {
-        return documentAddTimeMap[ipfs_hash];
+    //give true to the verified files
+    function verified(address user) public view returns(bool){
+        if(verifiedUser[user]){
+            return verifiedUser[user];
+        }else{
+            return false;
+        }
     }
 
-    function getDocumentAdderPublicId(string memory ipfs_hash)
-        public
-        view
-        returns (address)
-    {
-        return documentAddKeyMap[ipfs_hash];
+    //when the user will click university then his/her address will come here and return me the ipfs cid.. 
+    function get_ipfs_cid(address user) public view returns(string memory){
+        return userFilesCid[user];
     }
 }
