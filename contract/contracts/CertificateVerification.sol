@@ -3,7 +3,7 @@ pragma solidity >=0.4.1;
 
 contract CertificateVerification {
 
-    mapping(string => uint256) documentAddTimeMap; //contains when documents was added
+    mapping(string => bool) documentAddTimeMap; //contains when documents was added
     mapping(string => address) documentAddKeyMap; //contains public key of the user
     mapping(address => bool) verifiedUser; //contains verified users 
     mapping(address => string) userFilesCid; //contains user's ipfs
@@ -20,9 +20,11 @@ contract CertificateVerification {
     }
 
     //only owner can add files to the contract
-    function add_files(string memory ipfs_cid) public view owner_check returns(string memory){
+    // string memory ipfs_cid
+    function add_files(string memory ipfs_cid) public owner_check returns(bool){
         //check if already added
-        return ipfs_cid;
+        // return ipfs_cid;
+        // return false;
         // if (documentAddTimeMap[ipfs_cid] > 0) {
         //     //already added by someone else
         //     return documentAddTimeMap[ipfs_cid];
@@ -30,12 +32,13 @@ contract CertificateVerification {
         // //add now
         // uint256 timeAdded = block.timestamp;
         // documentAddTimeMap[ipfs_cid] = timeAdded;
-        // return documentAddTimeMap[ipfs_cid];
+        documentAddTimeMap[ipfs_cid] = true;
+        return documentAddTimeMap[ipfs_cid];
     }
 
     //this will verify user's uploaded document
     function verifyDocument(string memory ipfs_cid) public returns (bool){
-        if (documentAddTimeMap[ipfs_cid] > 0) {
+        if (documentAddTimeMap[ipfs_cid] == true) {
             verifiedUser[msg.sender] = true;
             userFilesCid[msg.sender] = ipfs_cid;
             return true;
