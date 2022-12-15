@@ -42,6 +42,7 @@ const adminpage = () => {
               type="file"
               className="hidden"
               onChange={(e) => setFile(e.target.files)}
+              multiple
             />
           </label>
         </div>
@@ -49,7 +50,7 @@ const adminpage = () => {
           onClick={uploadFiles}
           className="bg-gray-300 w-1/4 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
         >
-          <span>Download</span>
+          <span>Upload Files</span>
         </button>
       </div>
     </>

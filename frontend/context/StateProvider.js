@@ -35,24 +35,27 @@ const StateProvider = ({ children }) => {
   console.log({ web3, contract, account });
 
   const uploadFiles = async (e) => {
-    console.log("before upload");
+    e.preventDefault();
     const client = new Web3Storage({
       token:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE2MjdmMmVBNTQ5Y0FGQkZDZjA3QkFlZDI3MTM1NTAxQ0FmMzg3YTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Njk2NTExNDY2MDAsIm5hbWUiOiJ0ZXN0aW5nIn0.2gcgFGxCcL4eR7CV8z_suiDn28i8kb1KLi9iB6EXnrc",
     });
-    console.log({ client });
-    console.log({ e, file });
-    const cid = await client.put(file);
-    setCids((prev) => [...prev, cid]);
-    // console.log({ cid });
-    const result = await contract.methods.add_files(cid).send({
-      from: account,
-    });
-    console.log({ result });
-    console.log("after upload");
-    console.log("stored files with cid:", cid);
+
+    for (let i = 0; i < file.length; i++) {
+      //on the loading modal
+      console.log("before upload");
+      let files = [];
+      files.push(file[i]);
+      const cid = await client.put(files);
+      //close the loading modal
+      const result = await contract.methods.add_files(cid).send({
+        from: account,
+      });
+      console.log("after upload", cid);
+      console.log("result", result);
+    }
+    setFile(null);
   };
-  console.log({ cids });
 
   const veifyFile = async (e) => {
     e.preventDefault();
@@ -108,62 +111,6 @@ const StateProvider = ({ children }) => {
 };
 
 export default StateProvider;
-
-// import { useState } from "react";
-// import { Web3Storage, getFilesFromPath } from "web3.storage";
-// import { GraphQLClient, gql } from "graphql-request";
-// import axios from "axios";
-
-// // constructor
-// // :
-// // class Web3Storage
-// // delete
-// // :
-// // ƒ delete(cid, options)
-// // get
-// // :
-// // ƒ (cid, options)
-// // list
-// // :
-// // ƒ list(opts)
-// // put
-// // :
-// // ƒ put(files, options)
-// // putCar
-// // :
-// // ƒ putCar(car, options)
-// // status
-// // :
-// // ƒ status(cid, options)
-
-// export default function Home() {
-//   const [files, setFiles] = useState(null);
-//   const uploadFiles = async (e) => {
-//     console.log("before upload");
-//     const client = new Web3Storage({
-//       token:
-//         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE2MjdmMmVBNTQ5Y0FGQkZDZjA3QkFlZDI3MTM1NTAxQ0FmMzg3YTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Njk2NTExNDY2MDAsIm5hbWUiOiJ0ZXN0aW5nIn0.2gcgFGxCcL4eR7CV8z_suiDn28i8kb1KLi9iB6EXnrc",
-//     });
-//     console.log({ client });
-//     const cid = await client.put(files);
-//     console.log("after upload");
-//     console.log("stored files with cid:", cid);
-//   };
-
-//   const getFiles = async (e) => {
-//     e.preventDefault();
-//     const client = new Web3Storage({
-//       token:
-//         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE2MjdmMmVBNTQ5Y0FGQkZDZjA3QkFlZDI3MTM1NTAxQ0FmMzg3YTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Njk2NTExNDY2MDAsIm5hbWUiOiJ0ZXN0aW5nIn0.2gcgFGxCcL4eR7CV8z_suiDn28i8kb1KLi9iB6EXnrc",
-//     });
-//     console.log("before files");
-//     const res = await client.get(
-//       "bafybeiasimfsm4jhfuz3heelgrurd3yp6etojl2lspu527agxy6njatlia"
-//     );
-//     const files = await res.files();
-//     console.log(files);
-//   };
-
 //   const download = async () => {
 //     try {
 //       const val =
