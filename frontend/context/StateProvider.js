@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import detectEthereumProvider from "@metamask/detect-provider";
 import Verify from "../../contract/build/contracts/CertificateVerification.json";
 import { Web3Storage, getFilesFromPath } from "web3.storage";
@@ -11,11 +11,33 @@ const StateProvider = ({ children }) => {
   const [contract, setContract] = useState(null);
   const [account, setAccount] = useState(null);
   const [file, setFile] = useState(null);
-  const [cids, setCids] = useState([]);
-  console.log("context", file);
+  const [click, setClick] = useState(null);
+
+  useEffect(() => {
+    const loadProvider = async () => {
+      const provider = await detectEthereumProvider();
+      if (provider) {
+        await provider.request({ method: "eth_requestAccounts" });
+        const web3 = new Web3(provider);
+        const contract = new web3.eth.Contract(
+          Verify.abi,
+          Verify.networks[5777].address
+        );
+        const accounts = await web3.eth.getAccounts();
+        console.log("Accounts", accounts);
+        setAccount(accounts[0]);
+        setWeb3(web3);
+        setContract(contract);
+      } else {
+        console.error("Please install MetaMask!");
+      }
+    };
+    loadProvider();
+  }, []);
 
   const loadProvider = async () => {
     const provider = await detectEthereumProvider();
+    setClick(true);
     if (provider) {
       provider.request({ method: "eth_requestAccounts" });
       const web3 = new Web3(provider);
@@ -53,6 +75,7 @@ const StateProvider = ({ children }) => {
       });
       console.log("after upload", cid);
       console.log("result", result);
+      alert(result.events.outputResult.returnValues[0]);
     }
     setFile(null);
   };
@@ -74,7 +97,8 @@ const StateProvider = ({ children }) => {
       from: account,
     });
     console.log({ result });
-
+    console.log({ outputResult: result.events.outputResult.returnValues[0] });
+    alert(result.events.outputResult.returnValues[0]);
     console.log("after upload");
     console.log("stored files with cid:", cid);
   };

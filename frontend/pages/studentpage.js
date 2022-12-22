@@ -2,7 +2,20 @@ import React, { useContext } from "react";
 import { StateContext } from "../context/StateProvider";
 
 const studentpage = () => {
-  const { uploadFiles, veifyFile } = useContext(StateContext);
+  const {
+    web3,
+    setWeb3,
+    contract,
+    setContract,
+    account,
+    setAccount,
+    getFiles,
+    uploadFiles,
+    loadProvider,
+    file,
+    setFile,
+    veifyFile,
+  } = useContext(StateContext);
   return (
     <>
       <div className="flex flex-col justify-center items-center gap-5">
@@ -47,7 +60,7 @@ const studentpage = () => {
           onClick={veifyFile}
           className="bg-gray-300 w-1/4 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
         >
-          <span>Download</span>
+          <span>Verify</span>
         </button>
       </div>
     </>

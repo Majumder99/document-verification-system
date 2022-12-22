@@ -23,12 +23,6 @@ const Navbar = () => {
             <Link href="/universitypage">University</Link>
           </div>
         </div>
-        <div
-          className="p-4 border rounded-md border-black text-[18px] cursor-pointer"
-          onClick={loadProvider}
-        >
-          Connect to wallet
-        </div>
       </div>
     </>
   );
