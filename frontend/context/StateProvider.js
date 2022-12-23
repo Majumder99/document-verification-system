@@ -17,6 +17,7 @@ const StateProvider = ({ children }) => {
     const loadProvider = async () => {
       const provider = await detectEthereumProvider();
       if (provider) {
+        console.log("I am running");
         await provider.request({ method: "eth_requestAccounts" });
         const web3 = new Web3(provider);
         const contract = new web3.eth.Contract(
@@ -33,7 +34,7 @@ const StateProvider = ({ children }) => {
       }
     };
     loadProvider();
-  }, []);
+  }, [contract]);
 
   const loadProvider = async () => {
     const provider = await detectEthereumProvider();
@@ -135,43 +136,3 @@ const StateProvider = ({ children }) => {
 };
 
 export default StateProvider;
-//   const download = async () => {
-//     try {
-//       const val =
-//         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE2MjdmMmVBNTQ5Y0FGQkZDZjA3QkFlZDI3MTM1NTAxQ0FmMzg3YTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Njk2NTExNDY2MDAsIm5hbWUiOiJ0ZXN0aW5nIn0.2gcgFGxCcL4eR7CV8z_suiDn28i8kb1KLi9iB6EXnrc";
-//       const response = await axios({
-//         method: "get",
-//         headers: { Authorization: `Bearer ${val}` },
-//         url: "https://api.web3.storage/user/uploads/bafybeiasimfsm4jhfuz3heelgrurd3yp6etojl2lspu527agxy6njatlia",
-//       });
-//       if (response) {
-//         console.log(response);
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//   //see file using this
-//   //bafybeidd2gyhagleh47qeg77xqndy2qy3yzn4vkxmk775bg2t5lpuy7pcu.ipfs.w3s.link/youareanonsense.jpg
-
-//   https: return (
-//     <>
-//       <div>
-//         <input type="file" onChange={(e) => setFiles(e.target.files)} />
-//         <button onClick={uploadFiles}>Upload</button>
-//         <button onClick={getFiles}>Get files</button>
-//         {/* <button onClick={download}>download</button> */}
-//         <button>
-//           <a
-//             class="ipfs-downloader"
-//             data-cid="/ipfs/bafybeiasimfsm4jhfuz3heelgrurd3yp6etojl2lspu527agxy6njatlia"
-//             download="filename.ext"
-//           >
-//             Download label
-//           </a>
-//         </button>
-//       </div>
-//     </>
-//   );
-// }
