@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { StateContext } from "../context/StateProvider";
+import Modal from "../components/Modal";
 
 const studentpage = () => {
   const {
@@ -16,6 +17,8 @@ const studentpage = () => {
     setFile,
     veifyFile,
     verifyAndApply,
+    showModal,
+    setShowModal,
   } = useContext(StateContext);
   return (
     <>
@@ -72,6 +75,7 @@ const studentpage = () => {
           <span>Verify & Apply</span>
         </button>
       </div>
+      {showModal && <Modal title={"File verified"} />}
     </>
   );
 };

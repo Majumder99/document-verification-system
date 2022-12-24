@@ -3,7 +3,25 @@ import Link from "next/link";
 import { StateContext } from "../context/StateProvider";
 
 const Navbar = () => {
-  const { showNav, setShowNav } = useContext(StateContext);
+  const {
+    web3,
+    setWeb3,
+    contract,
+    setContract,
+    account,
+    setAccount,
+    getFiles,
+    uploadFiles,
+    loadProvider,
+    file,
+    setFile,
+    veifyFile,
+    verifyAndApply,
+    showNav,
+    setShowNav,
+    showModal,
+    setShowModal,
+  } = useContext(StateContext);
   return (
     <>
       <div className="w-full flex gap-2 justify-between items-center p-2">
@@ -24,6 +42,12 @@ const Navbar = () => {
               <Link href="/universitypage">University</Link>
             </div>
           )}
+        </div>
+        <div
+          className="p-4 border rounded-md border-black text-[18px] cursor-pointer"
+          onClick={loadProvider}
+        >
+          Connect to wallet
         </div>
       </div>
     </>

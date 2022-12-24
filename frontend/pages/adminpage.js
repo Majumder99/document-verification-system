@@ -1,9 +1,28 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useContext } from "react";
+import Modal from "../components/Modal";
 import { StateContext } from "../context/StateProvider";
 
 const adminpage = () => {
-  const { uploadFiles, setFile } = useContext(StateContext);
+  const {
+    web3,
+    setWeb3,
+    contract,
+    setContract,
+    account,
+    setAccount,
+    getFiles,
+    uploadFiles,
+    loadProvider,
+    file,
+    setFile,
+    veifyFile,
+    verifyAndApply,
+    showNav,
+    setShowNav,
+    showModal,
+    setShowModal,
+  } = useContext(StateContext);
 
   return (
     <>
@@ -53,6 +72,7 @@ const adminpage = () => {
           <span>Upload Files</span>
         </button>
       </div>
+      {showModal && <Modal title={"File Upload"}/>}
     </>
   );
 };
