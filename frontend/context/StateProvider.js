@@ -11,7 +11,7 @@ const StateProvider = ({ children }) => {
   const [contract, setContract] = useState(null);
   const [account, setAccount] = useState(null);
   const [file, setFile] = useState(null);
-  const [click, setClick] = useState(null);
+  const [showNav, setShowNav] = useState(null);
 
   useEffect(() => {
     const loadProvider = async () => {
@@ -38,7 +38,6 @@ const StateProvider = ({ children }) => {
 
   const loadProvider = async () => {
     const provider = await detectEthereumProvider();
-    setClick(true);
     if (provider) {
       provider.request({ method: "eth_requestAccounts" });
       const web3 = new Web3(provider);
@@ -104,6 +103,35 @@ const StateProvider = ({ children }) => {
     console.log("stored files with cid:", cid);
   };
 
+  const verifyAndApply = async (e) => {
+    e.preventDefault();
+    console.log("before upload");
+    const client = new Web3Storage({
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE2MjdmMmVBNTQ5Y0FGQkZDZjA3QkFlZDI3MTM1NTAxQ0FmMzg3YTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Njk2NTExNDY2MDAsIm5hbWUiOiJ0ZXN0aW5nIn0.2gcgFGxCcL4eR7CV8z_suiDn28i8kb1KLi9iB6EXnrc",
+    });
+    // console.log({ client });
+    // console.log({ e, file });
+    const cid = await client.put(file);
+    console.log("verif", cid);
+    // const result = getFiles(cid)
+
+    const result = await contract.methods.verifyApplyDocument(cid).send({
+      from: account,
+    });
+
+    console.log({ result });
+    console.log({ outputResult: result.events.outputResult.returnValues[0] });
+    if (result.events.outputResult.returnValues[0]) {
+      setShowNav(true)
+    } else {
+      setShowNav(false)
+    }
+      alert(result.events.outputResult.returnValues[0]);
+    console.log("after upload");
+    console.log("stored files with cid:", cid);
+  };
+
   const getFiles = async (cid) => {
     // e.preventDefault();
     const client = new Web3Storage({
@@ -129,6 +157,9 @@ const StateProvider = ({ children }) => {
     file,
     setFile,
     veifyFile,
+    verifyAndApply,
+    showNav,
+    setShowNav,
   };
   return (
     <StateContext.Provider value={value}>{children}</StateContext.Provider>

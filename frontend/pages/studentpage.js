@@ -15,6 +15,7 @@ const studentpage = () => {
     file,
     setFile,
     veifyFile,
+    verifyAndApply,
   } = useContext(StateContext);
   return (
     <>
@@ -56,11 +57,19 @@ const studentpage = () => {
             />
           </label>
         </div>
+      </div>
+      <div className="flex items-center justify-center mt-5 gap-3">
         <button
           onClick={veifyFile}
           className="bg-gray-300 w-1/4 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
         >
           <span>Verify</span>
+        </button>
+        <button
+          onClick={verifyAndApply}
+          className="bg-gray-300 w-1/4 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
+        >
+          <span>Verify & Apply</span>
         </button>
       </div>
     </>

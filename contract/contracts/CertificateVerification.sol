@@ -3,7 +3,8 @@ pragma solidity >=0.4.1;
 
 contract CertificateVerification {
 
- event outputResult(bool);
+    event outputResult(bool);
+    event outputCid(string);
 
     mapping(string => uint256) documentAddTimeMap; //contains when documents was added
     mapping(string => address) documentAddKeyMap; //contains public key of the user
@@ -44,6 +45,17 @@ contract CertificateVerification {
     function verifyDocument(string memory ipfs_cid) public student_check returns(bool){
         if (documentAddTimeMap[ipfs_cid] > 0) {
             verifiedUser[msg.sender] = true;
+            emit outputResult(true);
+            return true;
+        }
+        emit outputResult(false);
+        return false;
+    }
+
+    //this is for verify and apply button
+    function verifyApplyDocument(string memory ipfs_cid) public student_check returns(bool){
+        if (documentAddTimeMap[ipfs_cid] > 0) {
+            verifiedUser[msg.sender] = true;
             userFilesCid[msg.sender] = ipfs_cid;
             emit outputResult(true);
             return true;
@@ -62,7 +74,8 @@ contract CertificateVerification {
     }
 
     //when the user will click university then his/her address will come here and return me the ipfs cid.. 
-    function get_ipfs_cid(address user) public view returns(string memory){
+    function get_ipfs_cid(address user) public student_check returns(string memory){
+        emit outputCid(userFilesCid[user]);
         return userFilesCid[user];
     }
 }
