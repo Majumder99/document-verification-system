@@ -34,20 +34,24 @@ function Loader({ showLoader }) {
 
   return (
     <>
-      <div style={overlay_style} />
-      <div
-        style={model_styles}
-        className="flex flex-col gap-6 px-[60px] py-[40px] mb-[24px] items-center relative"
-      >
-        <ClipLoader
-          color={color}
-          loading={showLoader}
-          cssOverride={override}
-          size={150}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      </div>
+      {showLoader && (
+        <>
+          <div style={overlay_style} />
+          <div
+            style={model_styles}
+            className="flex flex-col gap-6 px-[60px] py-[40px] mb-[24px] items-center relative"
+          >
+            <ClipLoader
+              color={color}
+              loading={showLoader}
+              cssOverride={override}
+              size={150}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        </>
+      )}
     </>
   );
 }

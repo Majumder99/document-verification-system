@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useContext } from "react";
 import ErrorModal from "../components/ErrorModal";
+import Footer from "../components/Footer";
+import Loader from "../components/Loader";
 import Modal from "../components/Modal";
 import { StateContext } from "../context/StateProvider";
 
@@ -23,16 +25,17 @@ const adminpage = () => {
     setShowNav,
     showModal,
     setShowModal,
-    showErrModal,
-    setShowErrModal,
+    showLoader,
+    setShowLoader,
   } = useContext(StateContext);
 
   return (
     <>
+      {<Loader showLoader={showLoader} />}
       <div className="flex items-center justify-center text-[50px]">
         <h1>Upload files to the IPFS</h1>
       </div>
-      <div className="flex justify-center mt-8 mb-[125px]">
+      <div className="flex justify-center mt-8 mb-[140px]">
         <div className="max-w-2xl rounded-lg shadow-xl bg-gray-50">
           <div className="m-4">
             <label className="inline-block mb-2 text-gray-500">
@@ -70,17 +73,16 @@ const adminpage = () => {
           </div>
           <div className="flex justify-center p-2">
             <button
-              className="w-full px-4 py-2 text-white bg-blue-500 rounded shadow-xl"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
               onClick={uploadFiles}
             >
-              Create
+              Upload File
             </button>
           </div>
         </div>
       </div>
-
+      <Footer />
       {showModal && <Modal title={"File Upload"} />}
-      {showErrModal && <ErrorModal title={"File Upload"} />}
     </>
   );
 };

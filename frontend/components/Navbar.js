@@ -24,7 +24,7 @@ const Navbar = () => {
   } = useContext(StateContext);
   return (
     <>
-      <div className="w-full mb-4 shadow-md mx-auto p-5">
+      <div className="w-full mb-4 shadow-md mx-auto p-3">
         <div className="w-full flex gap-2 items-center p-2">
           <div className="max-w-[20%]">
             <img src="/logo1.png" alt="" className="w-[14rem] h-[6rem]" />

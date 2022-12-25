@@ -14,7 +14,7 @@ const StateProvider = ({ children }) => {
   const [file, setFile] = useState(null);
   const [showNav, setShowNav] = useState(null);
   const [showModal, setShowModal] = useState(null);
-  const [showErrModal, setShowErrModal] = useState(null);
+  const [showLoader, setShowLoader] = useState(null);
   const [cid, setCid] = useState(null);
   const [name, setName] = useState(null);
   const [time, setTime] = useState(null);
@@ -45,6 +45,7 @@ const StateProvider = ({ children }) => {
   const uploadFiles = async (e) => {
     e.preventDefault();
     try {
+      setShowLoader(true);
       const client = new Web3Storage({
         token:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE2MjdmMmVBNTQ5Y0FGQkZDZjA3QkFlZDI3MTM1NTAxQ0FmMzg3YTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Njk2NTExNDY2MDAsIm5hbWUiOiJ0ZXN0aW5nIn0.2gcgFGxCcL4eR7CV8z_suiDn28i8kb1KLi9iB6EXnrc",
@@ -64,11 +65,11 @@ const StateProvider = ({ children }) => {
         console.log("result", result);
         // alert(result.events.outputResult.returnValues[0]);
         if (result.events.outputResult.returnValues[0]) {
+          setShowLoader(false);
           setShowModal(true);
-          setShowErrModal(false);
         } else {
+          setShowLoader(false);
           setShowModal(false);
-          setShowErrModal(true);
         }
       }
     } catch (error) {
@@ -81,6 +82,7 @@ const StateProvider = ({ children }) => {
   const veifyFile = async (e) => {
     e.preventDefault();
     try {
+      setShowLoader(true);
       console.log("before upload");
       const client = new Web3Storage({
         token:
@@ -99,11 +101,11 @@ const StateProvider = ({ children }) => {
       console.log({ outputResult: result.events.outputResult.returnValues[0] });
       // alert(result.events.outputResult.returnValues[0]);
       if (result.events.outputResult.returnValues[0]) {
+        setShowLoader(false);
         setShowModal(true);
-        setShowErrModal(false);
       } else {
+        setShowLoader(false);
         setShowModal(false);
-        setShowErrModal(true);
       }
       console.log("after upload");
       console.log("stored files with cid:", cid);
@@ -117,6 +119,7 @@ const StateProvider = ({ children }) => {
   const verifyAndApply = async (e) => {
     e.preventDefault();
     try {
+      setShowLoader(true);
       console.log("before upload");
       const client = new Web3Storage({
         token:
@@ -135,9 +138,11 @@ const StateProvider = ({ children }) => {
       console.log({ result });
       console.log({ outputResult: result.events.outputResult.returnValues[0] });
       if (result.events.outputResult.returnValues[0]) {
+        setShowLoader(false);
         setShowNav(true);
         setShowModal(true);
       } else {
+        setShowLoader(false);
         setShowNav(false);
         setShowModal(false);
       }
@@ -205,8 +210,8 @@ const StateProvider = ({ children }) => {
     setName,
     time,
     setTime,
-    showErrModal,
-    setShowErrModal,
+    showLoader,
+    setShowLoader,
   };
   return (
     <StateContext.Provider value={value}>{children}</StateContext.Provider>

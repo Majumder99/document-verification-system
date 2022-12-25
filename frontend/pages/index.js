@@ -1,6 +1,7 @@
 import { GrDocumentUpload } from "react-icons/gr";
 import { GrSecure } from "react-icons/gr";
 import { HiOutlineViewGrid } from "react-icons/hi";
+import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -75,6 +76,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { StateContext } from "../context/StateProvider";
 import Link from "next/link";
+import Footer from "../components/Footer";
 
 const universitypage = () => {
   const {
@@ -33,31 +34,33 @@ const universitypage = () => {
     <>
       <button
         onClick={getFiles}
-        className="bg-gray-300 w-1/4 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
+        className="bg-gray-300 w-1/4 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center mb-10"
       >
         Get File
       </button>
       {cid && name && time && (
-        <div className="w-full flex p-4 items-center justify-between text-center bg-white border rounded-lg shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-          <div>
-            <h5 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
-              {cid}
+        <>
+          <div className="w-full flex flex-col p-4  bg-white border rounded-lg shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 mb-[147px]">
+            <h5 className="mb-2 text-[30px] text-gray-900 dark:text-white">
+              Name : {name}
             </h5>
-            <h5 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
-              {name}
+            <h5 className="mb-2 text-[20px]  text-gray-900 dark:text-white">
+              Cid : {cid}
             </h5>
-            <p className="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">
-              {time}
+            <p className="mb-5 text-[16px] text-gray-500 sm:text-lg dark:text-gray-400">
+              Date : {time}
             </p>
+            <Link href={`https://ipfs.io/ipfs/${cid}`}>
+              <div className="p-4  flex items-center justify-center border-2 rounded-md border-black text-[18px] w-[15%] cursor-pointer hover:bg-black hover:text-white">
+                See File
+              </div>
+            </Link>
           </div>
-          <Link href={`https://ipfs.io/ipfs/${cid}`}>See file</Link>
-        </div>
+          <Footer />
+        </>
       )}
     </>
   );
 };
-
-// bafybeidd2gyhagleh47qeg77xqndy2qy3yzn4vkxmk775bg2t5lpuy7pcu.ipfs.w3s.link /
-// youareanonsense.jpg;
 
 export default universitypage;
