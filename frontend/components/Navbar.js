@@ -24,33 +24,45 @@ const Navbar = () => {
   } = useContext(StateContext);
   return (
     <>
-      <div className="max-w-[90%] mb-4">
-      <div className="w-full flex gap-2 justify-between items-center p-2">
-        <div className="flex gap-2">
-          <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer">
-            <Link href="/">Home</Link>
+      <div className="w-full mb-4 shadow-md mx-auto p-5">
+        <div className="w-full flex gap-2 items-center p-2">
+          <div className="max-w-[20%]">
+            <img src="/logo1.png" alt="" className="w-[14rem] h-[6rem]" />
           </div>
-          <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer">
-            <Link href="/adminpage">Admin</Link>
-          </div>
+          <div className="flex justify-between items-center flex-1">
+            <div className="flex gap-2">
+              <Link href="/">
+                <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer hover:bg-black hover:text-white">
+                  Home
+                </div>
+              </Link>
+              <Link href="/adminpage">
+                <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer hover:bg-black hover:text-white">
+                  Admin
+                </div>
+              </Link>
+              <Link href="/studentpage">
+                <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer hover:bg-black hover:text-white">
+                  Student
+                </div>
+              </Link>
 
-          <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer">
-            <Link href="/studentpage">Student</Link>
-          </div>
-
-          {showNav && (
-            <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer">
-              <Link href="/universitypage">University</Link>
+              {showNav && (
+                <Link href="/universitypage">
+                  <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer hover:bg-black hover:text-white">
+                    University
+                  </div>
+                </Link>
+              )}
             </div>
-          )}
+            <div
+              className="p-4 border rounded-md bg-black text-white text-[18px] cursor-pointer"
+              onClick={loadProvider}
+            >
+              Connect to wallet
+            </div>
+          </div>
         </div>
-        <div
-          className="p-4 border rounded-md border-black text-[18px] cursor-pointer"
-          onClick={loadProvider}
-        >
-          Connect to wallet
-        </div>
-      </div>
       </div>
     </>
   );
