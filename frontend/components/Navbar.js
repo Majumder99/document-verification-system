@@ -24,6 +24,7 @@ const Navbar = () => {
   } = useContext(StateContext);
   return (
     <>
+      <div className="max-w-[90%] mb-4">
       <div className="w-full flex gap-2 justify-between items-center p-2">
         <div className="flex gap-2">
           <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer">
@@ -49,6 +50,7 @@ const Navbar = () => {
         >
           Connect to wallet
         </div>
+      </div>
       </div>
     </>
   );

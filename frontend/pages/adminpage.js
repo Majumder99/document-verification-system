@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useContext } from "react";
+import ErrorModal from "../components/ErrorModal";
 import Modal from "../components/Modal";
 import { StateContext } from "../context/StateProvider";
 
@@ -22,6 +23,8 @@ const adminpage = () => {
     setShowNav,
     showModal,
     setShowModal,
+    showErrModal,
+    setShowErrModal,
   } = useContext(StateContext);
 
   return (
@@ -72,7 +75,8 @@ const adminpage = () => {
           <span>Upload Files</span>
         </button>
       </div>
-      {showModal && <Modal title={"File Upload"}/>}
+      {showModal && <Modal title={"File Upload"} />}
+      {showErrModal && <ErrorModal title={"File Upload"} />}
     </>
   );
 };
