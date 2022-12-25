@@ -162,17 +162,17 @@ const StateProvider = ({ children }) => {
     });
     console.log("before files", client);
     console.log({ contract });
-    const result = await contract.methods.get_ipfs_cid(account).send({
+    const result = await contract.methods.get_ipfs_cid().send({
       from: account,
     });
-    // console.log({ result });
+    console.log({ result });
     const cid = result.events.outputCid.returnValues[0];
     const res = await client.get(cid);
     const files = await res.files();
     // const unixTime = files[0].lastModified * 1000;
     // const dateString = moment.unix(unixTime).format("L");
     const dataString = moment(files[0].lastModified).format("L");
-    setCid(files[0].cid);
+    setCid(cid);
     setName(files[0].name);
     setTime(dataString);
     console.log({ files });
@@ -210,3 +210,6 @@ const StateProvider = ({ children }) => {
 };
 
 export default StateProvider;
+
+// bafybeidy4fsdj4hm6aw4d46yfs462o2lwtbujbuj3cpdf7ichmhk5qfhdi;
+// bafybeiehhfuyrp4c6eai36n2utfcacwnk46xrqmtq3xwxr5txlvtbnsbzm;

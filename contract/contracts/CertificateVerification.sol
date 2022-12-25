@@ -74,8 +74,8 @@ contract CertificateVerification {
     }
 
     //when the user will click university then his/her address will come here and return me the ipfs cid.. 
-    function get_ipfs_cid(address user) public student_check returns(string memory){
-        emit outputCid(userFilesCid[user]);
-        return userFilesCid[user];
+    function get_ipfs_cid() public student_check returns(string memory){
+        emit outputCid(userFilesCid[msg.sender]);
+        return userFilesCid[msg.sender];
     }
 }

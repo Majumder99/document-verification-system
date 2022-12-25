@@ -1,9 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { StateContext } from "../context/StateProvider";
-import detectEthereumProvider from "@metamask/detect-provider";
-import Verify from "../../contract/build/contracts/CertificateVerification.json";
-import { Web3Storage, getFilesFromPath } from "web3.storage";
-import Web3 from "web3";
+import Link from "next/link";
 
 const universitypage = () => {
   const {
@@ -53,7 +50,7 @@ const universitypage = () => {
               {time}
             </p>
           </div>
-          {/* <a href={`${cid}.ipfs.w3s.link`}>See file</a> */}
+          <Link href={`https://ipfs.io/ipfs/${cid}`}>See file</Link>
         </div>
       )}
     </>
