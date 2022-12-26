@@ -27,6 +27,8 @@ const adminpage = () => {
     setShowModal,
     showLoader,
     setShowLoader,
+    showErrModal,
+    setShowErrModal,
   } = useContext(StateContext);
 
   return (
@@ -67,6 +69,7 @@ const adminpage = () => {
                   className="opacity-0"
                   multiple
                   onChange={(e) => setFile(e.target.files)}
+                  accept="application/pdf"
                 />
               </label>
             </div>
@@ -83,6 +86,7 @@ const adminpage = () => {
       </div>
       <Footer />
       {showModal && <Modal title={"File Upload"} />}
+      {showErrModal && <ErrorModal title={"File Not Upload"} />}
     </>
   );
 };

@@ -14,10 +14,12 @@ const StateProvider = ({ children }) => {
   const [file, setFile] = useState(null);
   const [showNav, setShowNav] = useState(null);
   const [showModal, setShowModal] = useState(null);
+  const [showErrModal, setShowErrModal] = useState(null);
   const [showLoader, setShowLoader] = useState(null);
   const [cid, setCid] = useState(null);
   const [name, setName] = useState(null);
   const [time, setTime] = useState(null);
+  const [providerShow, setProviderShow] = useState(true);
 
   const loadProvider = async () => {
     console.log("I am running");
@@ -34,7 +36,10 @@ const StateProvider = ({ children }) => {
       setAccount(accounts[0]);
       setWeb3(web3);
       setContract(contract);
-      console.log({ contract });
+      setFile(null);
+      setCid(null);
+      setName(null);
+      setTime(null);
     } else {
       console.error("Please install MetaMask!");
     }
@@ -67,12 +72,17 @@ const StateProvider = ({ children }) => {
         if (result.events.outputResult.returnValues[0]) {
           setShowLoader(false);
           setShowModal(true);
+          setShowErrModal(false);
         } else {
           setShowLoader(false);
           setShowModal(false);
+          setShowErrModal(true);
         }
       }
+      setFile(null);
     } catch (error) {
+      setFile(null);
+      setShowLoader(false);
       console.log({ error });
       alert("You are not admin");
     }
@@ -103,19 +113,24 @@ const StateProvider = ({ children }) => {
       if (result.events.outputResult.returnValues[0]) {
         setShowLoader(false);
         setShowModal(true);
+        setShowErrModal(false);
       } else {
         setShowLoader(false);
         setShowModal(false);
+        setShowErrModal(true);
       }
       console.log("after upload");
       console.log("stored files with cid:", cid);
+      setFile(null);
     } catch (error) {
+      setFile(null);
+      setShowLoader(false);
       console.log({ error });
-      console.log("You are not student");
+      alert("You are not student");
     }
-    setFile(null);
   };
 
+  console.log({ file });
   const verifyAndApply = async (e) => {
     e.preventDefault();
     try {
@@ -141,19 +156,23 @@ const StateProvider = ({ children }) => {
         setShowLoader(false);
         setShowNav(true);
         setShowModal(true);
+        setShowErrModal(false);
       } else {
         setShowLoader(false);
         setShowNav(false);
         setShowModal(false);
+        setShowErrModal(true);
       }
       // alert(result.events.outputResult.returnValues[0]);
       console.log("after upload");
       console.log("stored files with cid:", cid);
+      setFile(null);
     } catch (error) {
+      setFile(null);
+      setShowLoader(false);
       console.log({ error });
       alert("You are not student");
     }
-    setFile(null);
   };
 
   const getFiles = async (e) => {
@@ -171,6 +190,7 @@ const StateProvider = ({ children }) => {
       console.log({ result });
       const cid = result.events.outputCid.returnValues[0];
       const res = await client.get(cid);
+      console.log({ res });
       const files = await res.files();
       // const unixTime = files[0].lastModified * 1000;
       // const dateString = moment.unix(unixTime).format("L");
@@ -179,8 +199,10 @@ const StateProvider = ({ children }) => {
       setName(files[0].name);
       setTime(dataString);
       console.log({ files });
+      setFile(null);
     } catch (error) {
       console.log({ error });
+      setFile(null);
       alert("You are not student");
     }
   };
@@ -212,6 +234,10 @@ const StateProvider = ({ children }) => {
     setTime,
     showLoader,
     setShowLoader,
+    showErrModal,
+    setShowErrModal,
+    providerShow,
+    setProviderShow,
   };
   return (
     <StateContext.Provider value={value}>{children}</StateContext.Provider>

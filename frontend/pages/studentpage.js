@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { StateContext } from "../context/StateProvider";
 import Modal from "../components/Modal";
 import ErrorModal from "../components/ErrorModal";
@@ -24,6 +24,9 @@ const studentpage = () => {
     setShowModal,
     showLoader,
     setShowLoader,
+    showErrModal,
+    setShowErrModal,
+    setShowNav,
   } = useContext(StateContext);
   return (
     <>
@@ -38,7 +41,7 @@ const studentpage = () => {
               File Upload
             </label>
             <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col w-full h-32 border-4 border-blue-200 border-dashed hover:bg-gray-100 hover:border-gray-300">
+              <label className="flex flex-col w-full h-32 border-4 border-blue-200 border-dashed hover:bg-gray-100 hover:border-gray-300 cursor-pointer">
                 <div className="flex flex-col items-center justify-center pt-7">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -63,6 +66,7 @@ const studentpage = () => {
                   className="opacity-0"
                   multiple
                   onChange={(e) => setFile(e.target.files)}
+                  accept="application/pdf"
                 />
               </label>
             </div>
@@ -85,6 +89,7 @@ const studentpage = () => {
       </div>
       <Footer />
       {showModal && <Modal title={"File verified"} />}
+      {showErrModal && <ErrorModal title={"File not verified"} />}
     </>
   );
 };

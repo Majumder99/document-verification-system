@@ -21,6 +21,8 @@ const Navbar = () => {
     setShowNav,
     showModal,
     setShowModal,
+    providerShow,
+    setProviderShow,
   } = useContext(StateContext);
   return (
     <>
@@ -42,7 +44,10 @@ const Navbar = () => {
                 </div>
               </Link>
               <Link href="/studentpage">
-                <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer hover:bg-black hover:text-white">
+                <div
+                  onClick={() => setShowNav(false)}
+                  className="p-4 border rounded-md border-black text-[18px] cursor-pointer hover:bg-black hover:text-white"
+                >
                   Student
                 </div>
               </Link>
