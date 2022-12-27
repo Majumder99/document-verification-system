@@ -65,7 +65,10 @@ const studentpage = () => {
                   type="file"
                   className="opacity-0"
                   multiple
-                  onChange={(e) => setFile(e.target.files)}
+                  onChange={(e) => {
+                    alert("File uploaded");
+                    setFile(e.target.files)
+                  }}
                   accept="application/pdf"
                 />
               </label>

@@ -26,7 +26,7 @@ const StateProvider = ({ children }) => {
     const provider = await detectEthereumProvider();
     if (provider) {
       console.log("insinde provider");
-      provider.request({ method: "eth_requestAccounts" });
+      await provider.request({ method: "eth_requestAccounts" });
       const web3 = new Web3(provider);
       const contract = new web3.eth.Contract(
         Verify.abi,
@@ -245,6 +245,3 @@ const StateProvider = ({ children }) => {
 };
 
 export default StateProvider;
-
-// bafybeidy4fsdj4hm6aw4d46yfs462o2lwtbujbuj3cpdf7ichmhk5qfhdi;
-// bafybeiehhfuyrp4c6eai36n2utfcacwnk46xrqmtq3xwxr5txlvtbnsbzm;
