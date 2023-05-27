@@ -27,6 +27,7 @@ const studentpage = () => {
     showErrModal,
     setShowErrModal,
     setShowNav,
+    handleFileInputChange,
   } = useContext(StateContext);
   return (
     <>
@@ -67,7 +68,8 @@ const studentpage = () => {
                   multiple
                   onChange={(e) => {
                     alert("File uploaded");
-                    setFile(e.target.files)
+                    setFile(e.target.files);
+                    handleFileInputChange(e);
                   }}
                   accept="application/pdf"
                 />

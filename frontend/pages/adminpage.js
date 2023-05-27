@@ -29,6 +29,9 @@ const adminpage = () => {
     setShowLoader,
     showErrModal,
     setShowErrModal,
+    uploadFilesToIpfs,
+    getFilesFromIpfs,
+    handleFileInputChange,
   } = useContext(StateContext);
 
   return (
@@ -71,6 +74,7 @@ const adminpage = () => {
                   onChange={(e) => {
                     alert("File uploaded");
                     setFile(e.target.files);
+                    handleFileInputChange(e);
                   }}
                   accept="application/pdf"
                 />
@@ -80,7 +84,7 @@ const adminpage = () => {
           <div className="flex justify-center p-2">
             <button
               className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
-              onClick={uploadFiles}
+              onClick={uploadFilesToIpfs}
             >
               Upload File
             </button>

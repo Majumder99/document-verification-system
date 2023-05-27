@@ -52,13 +52,13 @@ const Navbar = () => {
                 </div>
               </Link>
 
-              {showNav && (
+              {/* {showNav && (
                 <Link href="/universitypage">
                   <div className="p-4 border rounded-md border-black text-[18px] cursor-pointer hover:bg-black hover:text-white">
                     University
                   </div>
                 </Link>
-              )}
+              )} */}
             </div>
             <div
               className="p-4 border rounded-md bg-black text-white text-[18px] cursor-pointer"
