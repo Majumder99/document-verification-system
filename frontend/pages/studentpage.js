@@ -4,6 +4,7 @@ import Modal from "../components/Modal";
 import ErrorModal from "../components/ErrorModal";
 import Loader from "../components/Loader";
 import Footer from "../components/Footer";
+import { saveAs } from "file-saver";
 
 const studentpage = () => {
   const {
@@ -29,6 +30,30 @@ const studentpage = () => {
     setShowNav,
     handleFileInputChange,
   } = useContext(StateContext);
+
+  const handleExport = () => {
+    const storedData = localStorage.getItem("verifyFileUploadData");
+    const parsedData = storedData ? JSON.parse(storedData) : {};
+    const { verifyFileTimes } = parsedData;
+    // Convert the fileTimes object into an array of objects with { filename, timeTaken } structure
+    const dataToExport = Object.keys(verifyFileTimes).map((filename) => ({
+      filename,
+      timeTaken: verifyFileTimes[filename],
+    }));
+    // Convert the data to CSV format
+    const csvData = [
+      ["File Upload", "Time Taken"], // Header row
+      ...dataToExport.map((item) => [item.filename, item.timeTaken]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+
+    // Create a Blob with the CSV data
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+
+    // Save the Blob as a CSV file
+    saveAs(blob, "fileverify.csv");
+  };
   return (
     <>
       {<Loader showLoader={showLoader} />}
@@ -91,6 +116,14 @@ const studentpage = () => {
             </button>
           </div>
         </div>
+      </div>
+      <div className="flex justify-center p-2">
+        <button
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
+          onClick={handleExport}
+        >
+          Export to CSV
+        </button>
       </div>
       <Footer />
       {showModal && <Modal title={"File verified"} />}

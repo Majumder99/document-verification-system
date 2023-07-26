@@ -27,7 +27,7 @@ const StateProvider = ({ children }) => {
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [account, setAccount] = useState(null);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState([]);
   const [showNav, setShowNav] = useState(null);
   const [showModal, setShowModal] = useState(null);
   const [showErrModal, setShowErrModal] = useState(null);
@@ -37,6 +37,50 @@ const StateProvider = ({ children }) => {
   const [time, setTime] = useState(null);
   const [providerShow, setProviderShow] = useState(true);
   const [hasValue, setHasValue] = useState(null);
+
+  const [fileTimes, setFileTimes] = useState({});
+  const [verifyFileTimes, setVerifyFileTimes] = useState({});
+
+  // Load data from local storage on component mount for uploading files
+  useEffect(() => {
+    const storedData = localStorage.getItem("fileUploadData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      // Set the state using data from local storage
+      setFileTimes(parsedData.fileTimes || {});
+    }
+  }, []);
+
+  // Function to store state in local storage for uploading files
+  useEffect(() => {
+    const dataToStore = {
+      fileTimes,
+    };
+    localStorage.setItem("fileUploadData", JSON.stringify(dataToStore));
+  }, [fileTimes]);
+
+  // Load data from local storage on component mount for verifying files
+  useEffect(() => {
+    const storedVerifyData = localStorage.getItem("verifyFileUploadData");
+    if (storedVerifyData) {
+      const parsedData = JSON.parse(storedVerifyData);
+      // Set the state using data from local storage
+      setVerifyFileTimes(parsedData.verifyFileTimes || {});
+    }
+  }, []);
+
+  // Function to store state in local storage for verifying files
+  useEffect(() => {
+    const verifyDataToStore = {
+      verifyFileTimes,
+    };
+    localStorage.setItem(
+      "verifyFileUploadData",
+      JSON.stringify(verifyDataToStore)
+    );
+  }, [verifyFileTimes]);
+
+  // ... Existing functions ...
 
   const loadProvider = async () => {
     console.log("I am running");
@@ -67,44 +111,42 @@ const StateProvider = ({ children }) => {
   const uploadFilesToIpfs = async (e) => {
     e.preventDefault();
     console.log({ client });
+    // Set the start time when uploading begins
+    const startTime = Date.now();
+
+    // File upload logic...
     try {
-      const added = await client.add(hasValue);
-      // "QmZKPeoZp3MWXCMVWfKap5zjS44Nd3zcLq18i6vv4sgyQ7";
-      //   const added = await client.cat(
-      //     "QmZruBCPqSa5oC5md3mhVyJFm6gKmtGyQw6LrCwn2qFhb5"
-      //   );
-      console.log("after uploadf files added", added, added.path);
-      // await setCid(added.path);
-      // setHash(added.path);
-      const result = await contract.methods.add_files(added.path).send({
-        from: account,
-      });
-      // console.log("after upload", cid);
-      console.log("after upload result", result);
-      // alert(result.events.outputResult.returnValues[0]);
-      if (result.events.outputResult.returnValues[0]) {
-        setShowLoader(false);
-        setShowModal(true);
-        setHasValue(null);
-        setCid(null);
-        setShowErrModal(false);
-      } else {
-        setShowLoader(false);
-        setShowModal(false);
-        setShowErrModal(true);
-        setHasValue(null);
-        setCid(null);
+      setShowLoader(true);
+      for (let i = 0; i < hasValue.length; i++) {
+        const added = await client.add(hasValue[i]);
+        console.log("after uploadf files added", added, added.path);
+        const result = await contract.methods.add_files(added.path).send({
+          from: account,
+        });
+        if (result.events.outputResult.returnValues[0]) {
+          console.log(`File ${i + 1} uploaded successfully`);
+        } else {
+          console.log(`File ${i + 1} is already uploaded`);
+        }
       }
-      //   for await (const itr of added) {
-      //     let data = Buffer.from(itr).toString();
-      //     console.log(data);
-      //   }
-      //   console.log({ added });
+
+      // Store the end time when upload is complete
+      const endTime = Date.now();
+      const fileSize = hasValue.length;
+
+      // Calculate the time taken in minutes and update the state
+      const timeTaken = (endTime - startTime) / (1000 * 60);
+      setFileTimes((prevFileTimes) => ({
+        ...prevFileTimes,
+        [fileSize]: timeTaken,
+      }));
+      setShowLoader(false);
+      setHasValue(null);
+      setFile(null);
     } catch (error) {
       console.log("the errosr, ", error);
       setShowLoader(false);
       setHasValue(null);
-      setCid(null);
       alert("You are not admin");
     }
   };
@@ -127,21 +169,39 @@ const StateProvider = ({ children }) => {
   };
 
   const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      const fileContents = reader.result;
-      const hashedData = CryptoJS.SHA256(fileContents);
-      const hashString = hashedData.toString(CryptoJS.enc.Hex);
-      console.log("hashvalue", hashString);
-      setHasValue(hashString);
-    };
-    reader.readAsBinaryString(file);
+    const files = event.target.files;
+    const fileContentsPromises = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      fileContentsPromises.push(
+        new Promise((resolve) => {
+          reader.onload = () => {
+            const fileContents = reader.result;
+            const hashedData = CryptoJS.SHA256(fileContents);
+            const hashString = hashedData.toString(CryptoJS.enc.Hex);
+            resolve(hashString);
+          };
+          reader.readAsBinaryString(file);
+        })
+      );
+    }
+
+    Promise.all(fileContentsPromises)
+      .then((hashes) => {
+        console.log("hashed", hashes);
+        setHasValue(hashes);
+      })
+      .catch((error) => {
+        console.log("Error reading files:", error);
+      });
   };
 
   // we will not use it
   const uploadFiles = async (e) => {
     e.preventDefault();
+    const startTime = Date.now();
+
     try {
       setShowLoader(true);
       const client = new Web3Storage({
@@ -184,38 +244,50 @@ const StateProvider = ({ children }) => {
 
   const veifyFile = async (e) => {
     e.preventDefault();
+    const startTime = Date.now();
+
     try {
       setShowLoader(true);
       console.log("before upload");
-      // const client = new Web3Storage({
-      //   token:
-      //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE2MjdmMmVBNTQ5Y0FGQkZDZjA3QkFlZDI3MTM1NTAxQ0FmMzg3YTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Njk2NTExNDY2MDAsIm5hbWUiOiJ0ZXN0aW5nIn0.2gcgFGxCcL4eR7CV8z_suiDn28i8kb1KLi9iB6EXnrc",
-      // });
-      // // console.log({ client });
-      // // console.log({ e, file });
-      // const cid = await client.put(file);
-      // console.log("verif", cid);
-      // // const result = getFiles(cid)
-      const added = await client.add(hasValue);
-      console.log(added.path);
-
-      const result = await contract.methods.verifyDocument(added.path).send({
-        from: account,
-      });
-      console.log({ result });
-      console.log({ outputResult: result.events.outputResult.returnValues[0] });
-      // alert(result.events.outputResult.returnValues[0]);
-      if (result.events.outputResult.returnValues[0]) {
-        setShowLoader(false);
-        setShowModal(true);
-        setShowErrModal(false);
-      } else {
-        setShowLoader(false);
-        setShowModal(false);
-        setShowErrModal(true);
+      for (let i = 0; i < hasValue.length; i++) {
+        const added = await client.add(hasValue[i]);
+        const result = await contract.methods.verifyDocument(added.path).send({
+          from: account,
+        });
+        if (result.events.outputResult.returnValues[0]) {
+          console.log(`File ${i + 1} verified successfully`);
+        } else {
+          console.log(`File ${i + 1} not verified successfully`);
+        }
       }
-      console.log("after upload");
-      console.log("stored files with cid:", cid);
+
+      // Store the end time when upload is complete
+      const endTime = Date.now();
+      const fileSize = hasValue.length;
+
+      // Calculate the time taken in minutes and update the state
+      const timeTaken = (endTime - startTime) / (1000 * 60);
+      setVerifyFileTimes((prevFileTimes) => ({
+        ...prevFileTimes,
+        [fileSize]: timeTaken,
+      }));
+      setShowLoader(false);
+      setHasValue(null);
+      setFile(null);
+      // console.log({ result });
+      // console.log({ outputResult: result.events.outputResult.returnValues[0] });
+      // // alert(result.events.outputResult.returnValues[0]);
+      // if (result.events.outputResult.returnValues[0]) {
+      //   setShowLoader(false);
+      //   setShowModal(true);
+      //   setShowErrModal(false);
+      // } else {
+      //   setShowLoader(false);
+      //   setShowModal(false);
+      //   setShowErrModal(true);
+      // }
+      // console.log("after upload");
+      // console.log("stored files with cid:", cid);
     } catch (error) {
       setShowLoader(false);
       console.log({ error });

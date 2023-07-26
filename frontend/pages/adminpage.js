@@ -5,24 +5,10 @@ import Footer from "../components/Footer";
 import Loader from "../components/Loader";
 import Modal from "../components/Modal";
 import { StateContext } from "../context/StateProvider";
-
+import { saveAs } from "file-saver";
 const adminpage = () => {
   const {
-    web3,
-    setWeb3,
-    contract,
-    setContract,
-    account,
-    setAccount,
-    getFiles,
-    uploadFiles,
-    loadProvider,
-    file,
     setFile,
-    veifyFile,
-    verifyAndApply,
-    showNav,
-    setShowNav,
     showModal,
     setShowModal,
     showLoader,
@@ -32,7 +18,32 @@ const adminpage = () => {
     uploadFilesToIpfs,
     getFilesFromIpfs,
     handleFileInputChange,
+    fileTimes,
   } = useContext(StateContext);
+
+  const handleExport = () => {
+    const storedData = localStorage.getItem("fileUploadData");
+    const parsedData = storedData ? JSON.parse(storedData) : {};
+    const { fileTimes } = parsedData;
+    // Convert the fileTimes object into an array of objects with { filename, timeTaken } structure
+    const dataToExport = Object.keys(fileTimes).map((filename) => ({
+      filename,
+      timeTaken: fileTimes[filename],
+    }));
+    // Convert the data to CSV format
+    const csvData = [
+      ["File Upload", "Time Taken"], // Header row
+      ...dataToExport.map((item) => [item.filename, item.timeTaken]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+
+    // Create a Blob with the CSV data
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+
+    // Save the Blob as a CSV file
+    saveAs(blob, "fileupload.csv");
+  };
 
   return (
     <>
@@ -73,7 +84,8 @@ const adminpage = () => {
                   multiple
                   onChange={(e) => {
                     alert("File uploaded");
-                    setFile(e.target.files);
+                    const newFiles = Array.from(e.target.files); // Convert FileList to an array
+                    setFile(e.target.files); // Use spread operator on the newFiles array
                     handleFileInputChange(e);
                   }}
                   accept="application/pdf"
@@ -91,6 +103,15 @@ const adminpage = () => {
           </div>
         </div>
       </div>
+      <div className="flex justify-center p-2">
+        <button
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center"
+          onClick={handleExport}
+        >
+          Export to CSV
+        </button>
+      </div>
+
       <Footer />
       {showModal && <Modal title={"File Upload"} />}
       {showErrModal && <ErrorModal title={"File Not Upload"} />}
